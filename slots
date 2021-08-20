@@ -7,6 +7,13 @@ from flask_cors import CORS, cross_origin
 import smbus
 from lcd_i2c import *
 
+from configparser import ConfigParser
+
+#Read config.ini file
+config_object = ConfigParser()
+config_object.read("config.ini")
+slotparkir=info["slot"]
+
 lcd_init()
 lcd_string("TMDSpark System", LCD_LINE_1)
 lcd_string("www.tmdspark.com", LCD_LINE_2)
@@ -14,8 +21,7 @@ lcd_string("www.tmdspark.com", LCD_LINE_2)
 app = Flask(__name__)
 cors = CORS(app)
 
-global slots
-slots = 82
+
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -32,10 +38,17 @@ def helloWorld():
 
 @app.route("/slot")
 def keluar():
-    currentslots = tambah_slots(slots)
+    currentslots = tambah_slots(slotparkir)
     lcd_string('Parkiran Kosong', LCD_LINE_1)
     lcd_string(str(currentslots) + ' Slot(s)', LCD_LINE_2)
     return "Slot Bertambah"
+
+
+#tambahkan slot + 1 dan edit file config
+slotparkir = int(slotparkir) + 1
+info["slot"]=str(slotparkir)
+with open('config.ini', 'w') as conf:
+    config_object.write(conf)
 
 
 if __name__ == "__main__":
