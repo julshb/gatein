@@ -38,19 +38,20 @@ def helloWorld():
 
 
 @app.route("/slot")
-def keluar():
-    currentslots = tambah_slots(slotparkir)
+def keluar():   
+    #Read config.ini file
+    config_object = ConfigParser()
+    config_object.read("config.ini")
+    info = config_object["INFO"]
+    slotparkir=info["slot"]
     lcd_string('Parkiran Kosong', LCD_LINE_1)
-    lcd_string(str(currentslots) + ' Slot(s)', LCD_LINE_2)
+    lcd_string(slotparkir + ' Slot(s)', LCD_LINE_2)
+    #tambahkan slot + 1 dan edit file config
+    slotparkir = int(slotparkir) + 1
+    info["slot"]=str(slotparkir)
+    with open('config.ini', 'w') as conf:
+        config_object.write(conf)
     return "Slot Bertambah"
-
-
-#tambahkan slot + 1 dan edit file config
-slotparkir = int(slotparkir) + 1
-info["slot"]=str(slotparkir)
-with open('config.ini', 'w') as conf:
-    config_object.write(conf)
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8800, debug=True)
