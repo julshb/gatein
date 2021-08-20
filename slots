@@ -20,8 +20,9 @@ slots = 82
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-def tambah_slots(slots):
-    slots += 1
+def tambah_slots(x):
+    y = x + 1
+    return y
 
 @app.route("/")
 @cross_origin()
@@ -31,9 +32,9 @@ def helloWorld():
 
 @app.route("/slot")
 def keluar():
+    currentslots = tambah_slots(slots)
     lcd_string('Parkiran Kosong', LCD_LINE_1)
-    lcd_string(str(slots) + ' Slot(s)', LCD_LINE_2)
-    tambah_slots(slots)
+    lcd_string(str(currentslots) + ' Slot(s)', LCD_LINE_2)
     return "Slot Bertambah"
 
 
