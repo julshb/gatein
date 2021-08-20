@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+from flask import Flask
+from flask import render_template
+from flask import request
+from flask_cors import CORS, cross_origin
+import smbus
+from lcd_i2c import *
+
+lcd_init()
+lcd_string("TMDSpark System", LCD_LINE_1)
+lcd_string("www.tmdspark.com", LCD_LINE_2)
+
+app = Flask(__name__)
+cors = CORS(app)
+
+global slots
+slots = 82
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+
+def tambah_slots(slots):
+    slots += 1
+
+@app.route("/")
+@cross_origin()
+def helloWorld():
+    return "Hello, selamat datang!"
+
+
+@app.route("/slot")
+def keluar():
+    lcd_string('Parkiran Kosong', LCD_LINE_1)
+    lcd_string(str(slots) + ' Slot(s)', LCD_LINE_2)
+    tambah_slots(slots)
+    return "Slot Bertambah"
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8800, debug=True)
